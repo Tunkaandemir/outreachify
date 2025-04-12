@@ -1,62 +1,27 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { supabase, getSession } from '@/lib/supabase';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 export default function DashboardPage() {
-  const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
+  const { user, loading } = useAuth();
 
-  useEffect(() => {
-    async function loadSession() {
-      const session = await getSession();
-      if (!session) {
-        router.push('/login');
-        return;
-      }
-      setUser(session.user);
-      setIsLoading(false);
-    }
-
-    loadSession();
-  }, [router]);
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.push('/login');
-  };
-
-  if (isLoading) {
+  if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
+      <div className="flex items-center justify-center h-[calc(100vh-64px)] bg-background">
         <p>Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <header className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Outreachify Dashboard</h1>
-        <Button onClick={handleSignOut}>Log out</Button>
-      </header>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle>Welcome Back</CardTitle>
-          <CardDescription>You are logged in as {user?.email}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">
-            You've successfully authenticated to your Outreachify account.
-            Start exploring your dashboard to manage leads and outreach campaigns.
-          </p>
-        </CardContent>
-      </Card>
+    <div className="container mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+      <div className="bg-card p-6 rounded-lg shadow-sm">
+        <h2 className="text-xl font-semibold mb-2">Hello, {user?.email}</h2>
+        <p className="text-muted-foreground">
+          Welcome to your Outreachify dashboard. Your personalized content will appear here.
+        </p>
+      </div>
     </div>
   );
 } 

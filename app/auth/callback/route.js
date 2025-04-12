@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createServerClient } from '@/lib/supabase-server';
 
 // This route handles Supabase auth redirects
 export async function GET(request) {
@@ -8,6 +8,7 @@ export async function GET(request) {
   
   if (code) {
     try {
+      const supabase = createServerClient();
       // Exchange the auth code for a session
       await supabase.auth.exchangeCodeForSession(code);
       

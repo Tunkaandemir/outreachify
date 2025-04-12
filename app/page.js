@@ -1,19 +1,36 @@
+"use client";
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 export default function HomePage() {
+  const { user, loading } = useAuth();
+
   return (
     <div className="flex flex-col min-h-screen">
       <header className="border-b">
         <div className="container mx-auto py-4 px-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold">Outreachify</h1>
           <div className="space-x-2">
-            <Link href="/login">
-              <Button variant="outline">Login</Button>
-            </Link>
-            <Link href="/signup">
-              <Button>Sign Up</Button>
-            </Link>
+            {loading ? (
+              <span>Loading...</span>
+            ) : user ? (
+              <>
+                <Link href="/dashboard">
+                  <Button variant="outline">Dashboard</Button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="outline">Login</Button>
+                </Link>
+                <Link href="/signup">
+                  <Button>Sign Up</Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -25,9 +42,15 @@ export default function HomePage() {
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
               Automatically find and connect with qualified leads using our AI-powered platform. Save time and grow your business faster.
             </p>
-            <Link href="/signup">
-              <Button size="lg" className="px-8">Get Started</Button>
-            </Link>
+            {user ? (
+              <Link href="/dashboard">
+                <Button size="lg" className="px-8">Go to Dashboard</Button>
+              </Link>
+            ) : (
+              <Link href="/signup">
+                <Button size="lg" className="px-8">Get Started</Button>
+              </Link>
+            )}
           </div>
         </section>
         
